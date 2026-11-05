@@ -2,7 +2,7 @@
 """Create a new repository and separate release assets from explicit source lists."""
 import argparse,hashlib,json,shutil,zipfile
 from pathlib import Path
-SITE_FILES=('_redirects','index.html','styles.css','app.js','downloads.json','third-party.txt','vendor/gsap.min.js','vendor/ScrollTrigger.min.js','vendor/GSAP-LICENSE.txt','media/training-before.jpg','media/training-after.jpg','media/training-detail-before.jpg','media/training-detail-after.jpg','media/portrait-before.jpg','media/portrait-after.jpg','media/skin-overlay.jpg','media/cover-training.jpg','media/watermark.png')
+SITE_FILES=('_redirects','index.html','styles.css','app.js','downloads.json','third-party.txt','vendor/gsap.min.js','vendor/ScrollTrigger.min.js','vendor/GSAP-LICENSE.txt','media/training-before.jpg','media/training-after.jpg','media/training-detail-before.jpg','media/training-detail-after.jpg','media/portrait-before.jpg','media/portrait-after.jpg','media/skin-overlay.jpg','media/cover-training.jpg','media/watermark.png','media/compare.gif','media/workbench.png')
 DOC_FILES=('INSTALL.md','TESTED-RESULTS.md','THIRD_PARTY_NOTICES.md','PUBLISHING.md','DEMO-ASSETS.md')
 SCRIPT_FILES=('preview_publication.py','configure_downloads.py','build_publication.py','verify_publication.py')
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

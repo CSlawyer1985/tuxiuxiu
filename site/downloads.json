@@ -7,8 +7,8 @@
       "id": "standard",
       "label": "普通分享包",
       "filename": "tu-xiu-xiu-2.6.0-standard.zip",
-      "bytes": 19567763,
-      "sha256": "d046175dc16e433cec0595693c8cde6675bbcd50b5be3520879b2fb85e2ecc27",
+      "bytes": 19568529,
+      "sha256": "973a164b75cad577ebc4f17f043792955d735c6b4bdf5510c76c92e558bd3813",
       "url": "/downloads/tu-xiu-xiu-2.6.0-standard.zip",
       "requirements": "已有Python3.12—3.14；首次联网准备运行库",
       "release_url": "https://github.com/CSlawyer1985/tuxiuxiu/releases/download/v2.6.0/tu-xiu-xiu-2.6.0-standard.zip"
@@ -17,8 +17,8 @@
       "id": "offline",
       "label": "Apple 芯片离线包",
       "filename": "tu-xiu-xiu-2.6.0-macos-arm64-py314-offline.zip",
-      "bytes": 139192696,
-      "sha256": "844ee483fd98c6b4fcf8a954e62127a7a77de72d38272b6ebf3f2bd3dc6daf5b",
+      "bytes": 139193462,
+      "sha256": "b4aad2c638f69ffdd8c440ba5fdd2e373dbe7944236549f2d035a9e5dce8a073",
       "url": "/downloads/tu-xiu-xiu-2.6.0-macos-arm64-py314-offline.zip",
       "requirements": "macOS、Apple芯片、已有Python3.14；匹配平台可离线准备",
       "release_url": "https://github.com/CSlawyer1985/tuxiuxiu/releases/download/v2.6.0/tu-xiu-xiu-2.6.0-macos-arm64-py314-offline.zip"

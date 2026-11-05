@@ -11,7 +11,7 @@ import sys
 import zipfile
 
 FILES = (
-    "SKILL.md", "agents/openai.yaml", "references/修图业务规则.md",
+    "README.md", "SKILL.md", "agents/openai.yaml", "references/修图业务规则.md",
     "references/基础调色与肤色精修规范.md", "references/基础调色与肤色精修_记录模板.json",
     "references/执行契约与兼容性.md", "references/批次绑定模板.json", "references/处理能力与效果边界.md",
     "scripts/batch_contract.py", "scripts/photo_inventory.py", "scripts/test_contract.py",
@@ -30,7 +30,7 @@ FILES = (
     "scripts/retouch/tests/test_runner.py", "scripts/retouch/tests/test_callback.py", "scripts/retouch/tests/test_service.py",
     "scripts/retouch/tests/test_ui.py", "scripts/retouch/tests/ui_regressions.cjs",
     "assets/photo-review/index.html", "assets/photo-review/style.css", "assets/photo-review/app.js",
-    "开始使用.md", "一键准备.command", "scripts/setup_runtime.py", "scripts/retouch/skin_runtime.py", "scripts/retouch/skin_worker.py",
+    "一键准备.command", "scripts/setup_runtime.py", "scripts/retouch/skin_runtime.py", "scripts/retouch/skin_worker.py",
     "assets/runtime-requirements.txt", "assets/skin-model.json", "assets/models/selfie_multiclass_256x256_float32_v1.tflite",
     "assets/models/LICENSE-Apache-2.0.txt", "assets/models/NOTICE.txt", "references/分享安装与皮肤模型.md",
     "scripts/retouch/tests/test_setup.py", "scripts/retouch/skin_candidates.py",
