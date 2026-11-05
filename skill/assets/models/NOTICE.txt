@@ -1,0 +1,15 @@
+Google MediaPipe Selfie Multiclass Segmentation
+Original model and weights: Google LLC.
+License: Apache License, Version 2.0; full text in LICENSE-Apache-2.0.txt.
+Original float32 v1 TFLite weights are redistributed without modification.
+Model source, hash, class order and model-card URL: ../skin-model.json.
+This package adds local inference, guarded crop refinement and review workflow.
+The model proposes masks and does not certify complete or pixel-perfect skin selection.
+Optional dependency wheels retain their license and notice files inside each wheel.
+
+Additional unmodified official weights:
+Google MediaPipe Hair Segmenter and Face Landmarker task: Apache-2.0.
+OpenCV Zoo YuNet 2026may: MIT; see LICENSE-YuNet.txt.
+Sources, exact sizes and SHA-256: ../skin-model.json.
+Hair segmentation is intended for a single subject and is applied to face crops.
+No identity recognition or face embeddings are produced.

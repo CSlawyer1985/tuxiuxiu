@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.log
+.venv/
+node_modules/
+input/
+scratch/
+output/
+release-assets/
+.env
+.env.*

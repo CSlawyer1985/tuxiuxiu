@@ -1,0 +1,8 @@
+GSAP and ScrollTrigger 3.13.0
+Copyright GreenSock / Webflow. Original library headers are retained unchanged.
+Package source: https://registry.npmjs.org/gsap/-/gsap-3.13.0.tgz
+Package integrity: sha512-QL7MJ2WMjm1PHWsoFrAQH/J8wUeqZvMtHO58qdekHpCfhvhSL4gSiz6vJf5EeMP0LOn3ZCprL2ki/gjED8ghVw==
+License declaration from official npm package: Standard 'no charge' license: https://gsap.com/standard-license.
+Full applicable standard license: https://gsap.com/standard-license/
+Official license page: https://gsap.com/community/standard-license/
+This file is a license and provenance notice, not a replacement license.

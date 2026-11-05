@@ -1,0 +1,224 @@
+{
+  "record_version": "photo-color-skin-1.1",
+  "record_state": "unfilled_template_not_execution_evidence",
+  "normative_reference": "references/基础调色与肤色精修规范.md",
+  "batch": {
+    "id": null,
+    "activity_name": null,
+    "activity_date": null,
+    "directory_date_type": null,
+    "user_request_snapshot": null,
+    "scene_groups": [],
+    "representative_photos": [],
+    "representative_selection_reasons": [],
+    "candidate_recipes": [],
+    "chosen_recipe": null,
+    "user_feedback_verbatim": null,
+    "approval_state": "not_confirmed",
+    "approval_scope": null,
+    "uncovered_conditions_requiring_subgroup_sample": []
+  },
+  "runtime": {
+    "tools_and_versions": [],
+    "actual_capability_tests": [],
+    "unavailable_capabilities_and_fallbacks": [],
+    "actual_processing_order": [],
+    "order_change_reason": null
+  },
+  "photos": [
+    {
+      "input": {
+        "path": null,
+        "sha256": null,
+        "width": null,
+        "height": null,
+        "exif_orientation": null,
+        "format": null,
+        "source_bit_depth": null,
+        "embedded_icc": null,
+        "exif_color_declaration": null,
+        "color_assumption_if_needed": null,
+        "working_profile": null,
+        "working_transfer_function": null,
+        "channel_order": null,
+        "working_numeric_range": null,
+        "working_precision": null,
+        "lab_conversion_and_reference_white_if_used": null,
+        "color_conversion_intent_and_quantization": null
+      },
+      "diagnosis": {
+        "scene_tags": [],
+        "whole_image_metrics": null,
+        "subject_metrics": [],
+        "metric_domain_and_thresholds": null,
+        "metric_resolution_and_sampling": null,
+        "source_channel_clipping_maps": [],
+        "unrecoverable_source_information": [],
+        "sharpness_and_noise_proxies_with_limits": null
+      },
+      "regions": {
+        "coordinate_size_and_mapping": null,
+        "neutral_references_and_basis": [],
+        "subject_regions": [],
+        "pixel_locked_core_regions": [],
+        "content_protection_regions": [],
+        "mask_paths_hashes_feather_and_confidence": [],
+        "full_frame_overlay_review": null,
+        "boundary_and_low_confidence_review": null
+      },
+      "subjects": [
+        {
+          "local_subject_id_not_identity_claim": null,
+          "observation_regions_not_skin_masks": [],
+          "skin_regions_by_visible_body_part": [],
+          "feature_exclusions": [],
+          "skin_coverage_and_unprocessed_parts": null,
+          "light_and_color_reference_basis": null,
+          "color_luminance_texture_independent_settings": [],
+          "face_neck_arm_hand_transition_review": null
+        }
+      ],
+      "modules": {
+        "pre_denoise": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "white_balance": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "reference_region_refs": [],
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "base_tone": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "exposure_midtones": null,
+          "highlights_and_shoulder": null,
+          "white_endpoint": null,
+          "shadows": null,
+          "black_endpoint": null,
+          "contrast_curve_and_interpolation": null,
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "local_mixed_light": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "hsl_scene_color": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "hue_wrap_and_weighting": null,
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "skin_color": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "per_subject_settings_refs": [],
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "skin_luminance": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "per_subject_settings_refs": [],
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "skin_texture": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "face_and_nonface_settings": [],
+          "scale_decomposition_and_reconstruction_if_used": null,
+          "detail_retention_and_blending": null,
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "lut_style": {
+          "decision": "unassessed",
+          "reason": null,
+          "asset_path": null,
+          "asset_sha256": null,
+          "sampling_layout": null,
+          "interpolation": null,
+          "input_output_domains": null,
+          "blend_space_and_formula": null,
+          "local_strength": null,
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "output_sharpen": {
+          "decision": "unassessed",
+          "reason": null,
+          "operator_and_domain": null,
+          "actual_output_size": null,
+          "skin_noise_protection": null,
+          "parameters_with_units_and_bounds": [],
+          "mask_refs": [],
+          "checkpoint": null
+        },
+        "watermark_export": {
+          "decision": "unassessed",
+          "reason": null,
+          "approved_watermark_asset_and_hash": null,
+          "approved_layout_and_opacity": null,
+          "position_after_final_color_and_sharpen": null,
+          "output_profile_format_depth_quality_subsampling": null,
+          "metadata_handling": null,
+          "checkpoint": null
+        }
+      },
+      "comparison": {
+        "original_preview": null,
+        "base_and_skin_without_lut_preview": null,
+        "optional_style_previews": [],
+        "same_scale_face_neck_hand_detail_previews": [],
+        "lossless_baseline_and_masters": [],
+        "after_metrics_in_same_domain_and_regions": null,
+        "preclip_out_of_range_and_new_clipping": null,
+        "numeric_tolerances_and_validation_basis": null
+      },
+      "review": {
+        "source_and_geometry": "not_tested",
+        "color_and_units": "not_tested",
+        "tone_and_clipping": "not_tested",
+        "protected_core_and_content": "not_tested",
+        "skin_color_coverage_and_transitions": "not_tested",
+        "texture_and_sharpen_halos": "not_tested",
+        "lut_effect_on_corrected_skin_and_neutrals": "not_tested",
+        "sharing_size_and_original_pixel_review": "not_tested",
+        "watermark_and_output": "not_tested",
+        "failed_or_unavailable_checks": [],
+        "module_rollback_versions": [],
+        "self_review_evidence": [],
+        "independent_review_performed": false,
+        "user_sample_confirmation": null
+      },
+      "outputs": [],
+      "current_state": "not_processed"
+    }
+  ],
+  "artifact_contract_reference": "references/批次绑定模板.json"
+}

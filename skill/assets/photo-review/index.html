@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>图修修 · 活动修图工作台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><symbol id="icon-photo" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m4 18 5-5 3 3 4-6 5 8"/></symbol><symbol id="icon-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol><symbol id="icon-chat" viewBox="0 0 24 24"><path d="M20 15a3 3 0 0 1-3 3H8l-5 3V6a3 3 0 0 1 3-3h11a3 3 0 0 1 3 3Z"/><path d="M7 8h9M7 12h6"/></symbol><symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol></svg>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark"><svg><use href="#icon-photo"/></svg></span><div><strong>修图工作台</strong><p id="activityName">正在连接活动</p></div></div>
+  <div class="header-actions"><span id="callbackStatus" class="callback-status"><svg><use href="#icon-chat"/></svg><span>正在读取回传状态</span></span><button id="addPhotos" class="secondary"><svg><use href="#icon-add"/></svg>添加照片</button><button id="addFolder" class="quiet">选择文件夹</button></div>
+  <input id="photoInput" class="hidden" type="file" accept="image/*,.cr2,.cr3,.nef,.arw,.dng" multiple>
+  <input id="folderInput" class="hidden" type="file" webkitdirectory multiple>
+</header>
+<section class="runbar" aria-live="polite"><div><span id="statusDot" class="status-dot"></span><strong id="runStatus">准备中</strong><span id="runSummary">正在读取照片</span></div><div><button id="pauseRun" class="quiet hidden">暂停批量</button><button id="resumeRun" class="quiet hidden">继续处理</button><button id="retryRun" class="quiet hidden">重试异常</button><a id="downloadAll" class="download-all hidden" href="/api/download-all"><svg><use href="#icon-download"/></svg>下载本批成品</a></div></section>
+<div id="alert" class="alert hidden" role="alert"></div>
+<div class="workspace">
+  <aside class="library"><div class="section-title"><h2>本批照片</h2><span id="photoCount">0</span></div><label class="filter-label"><span>显示</span><select id="photoFilter"><option value="all">全部照片</option><option value="review">待选择与复核</option><option value="completed">已完成</option></select></label><div id="photoList" class="photo-list"></div></aside>
+  <main class="main-stage">
+    <div id="emptyState" class="empty-state"><svg><use href="#icon-photo"/></svg><h1>从这一批原片开始</h1><p>添加照片后，会自动分析光线、准备代表样片。你选好效果，再继续整批处理。</p><button id="emptyAdd" class="primary">选择照片</button></div>
+    <section id="photoStage" class="hidden">
+      <div class="photo-heading"><div><h1 id="photoName"></h1><p id="photoMeta"></p></div><span id="photoStatus" class="badge"></span></div>
+      <div class="viewer-tools"><button id="compareToggle" class="tool active" aria-pressed="true">前后对比</button><button id="overlayToggle" class="tool" aria-pressed="false">选区覆盖</button><button id="editToggle" class="tool" aria-pressed="false">编辑选区</button><button id="detailsOpen" class="tool">100% 细节</button></div>
+      <div id="singleViewer" class="viewer-surround"><div id="viewer" class="viewer"><img id="afterImage" alt="当前处理候选"><div id="beforeClip" class="before-clip"><img id="beforeImage" alt="色彩管理后的原片预览"></div><canvas id="drawCanvas" class="hidden" aria-label="在照片上编辑保护或皮肤选区"></canvas><span id="beforeLabel" class="image-label before-label">原片预览</span><span id="afterLabel" class="image-label after-label">当前候选</span><div id="compareLine" class="compare-line" role="slider" tabindex="0" aria-label="拖动照片分割线对比原片与当前方案" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-orientation="horizontal" title="左右拖动查看前后效果；也可用方向键微调"></div><div id="preparingOverlay" class="preparing-overlay hidden"><span class="spinner"></span><span>正在准备样片</span></div></div></div>
+      <div id="maskEditor" class="mask-editor hidden"><div class="editor-row"><label>选区<select id="maskLayer"><option value="protect">文字与画面保护</option><option value="skin">皮肤作用区</option></select></label><label>工具<select id="maskTool"><option value="rect">矩形</option><option value="brush">画笔</option></select></label><label class="inline-check"><input id="maskErase" type="checkbox">擦除</label><label class="brush-size">笔刷大小<input id="brushSize" type="range" min="1" max="15" value="3" aria-label="笔刷大小"></label></div><div class="editor-row"><p>蓝色为保护区，橙色为皮肤候选。保存后会更新样片。</p><button id="undoStroke" class="quiet">撤回一笔</button><button id="saveMask" class="secondary">保存选区并更新样片</button></div></div>
+      <div id="coverageLegend" class="coverage-legend hidden"><span class="blue-swatch"></span>文字与画面保护<span class="orange-swatch"></span>皮肤候选<span class="legend-note">请检查脸、耳颈、手部及衣物边界</span></div>
+      <div class="photo-footer"><div id="photoNotes"></div><a id="downloadPhoto" class="text-link hidden" download><svg><use href="#icon-download"/></svg>下载这张成品</a></div>
+      <section id="watermarkComparison" class="watermark-comparison hidden" aria-label="当前照片的三版水印叠加对比"><div class="comparison-heading"><h2>三版水印对比</h2><p id="watermarkComparisonStatus"></p></div><div id="watermarkComparisonGrid" class="watermark-comparison-grid"></div></section>
+      <div id="previousOutputs" class="previous-outputs"></div>
+      <div class="viewer-tools"><button id="repreparePhoto" class="quiet hidden">为这张另试一版</button><button id="excludePhoto" class="quiet hidden">说明原因并跳过这张</button><button id="assumeSrgb" class="quiet hidden">确认此批按 sRGB 假设重试</button></div>
+    </section>
+  </main>
+  <aside class="decision-panel"><div class="section-title"><h2>选择本批效果</h2><span class="step-number">01</span></div><p class="panel-intro">先比较修图效果、调整参数，再选择下方的活动水印。</p>
+    <div id="profiles" class="profiles" role="radiogroup" aria-label="修片方案"><button class="profile selected" data-profile="natural" role="radio" aria-checked="true"><span class="radio-mark"></span><span><strong>自然校正</strong><small>平衡明暗，保留现场氛围</small></span></button><button class="profile" data-profile="clear" role="radio" aria-checked="false"><span class="radio-mark"></span><span><strong>明净通透</strong><small>改善层次，温和协调偏色</small></span></button><button class="profile" data-profile="portrait" role="radio" aria-checked="false"><span class="radio-mark"></span><span><strong>柔和人像</strong><small>协调肤色，轻度柔化粗糙</small></span></button><button class="profile original-profile" data-profile="keep" role="radio" aria-checked="false"><span class="radio-mark"></span><span><strong>保留原貌</strong><small>此批或此张无需调色时使用</small></span></button></div>
+    <label class="field-label">应用范围<select id="applyScope"><option value="batch">本批待处理照片</option><option value="current">仅当前照片</option></select></label>
+    <section id="tuningPanel" class="tuning-panel review-section"><h3>微调当前方案</h3><p class="subtle">亮度与颜色是在自动方案上微调；磨皮、锐化为强度。效果在中间预览，确认前请更新原尺寸样片。</p><div id="tuningPrimary"></div><details class="tuning-more"><summary>更多微调 · 明暗、色偏与肤色</summary><div id="tuningAdvanced"></div></details><div class="tuning-actions"><button id="resetTuning" class="quiet">恢复方案默认值</button><button id="applyTuning" class="secondary">应用微调并更新样片</button></div><p id="tuningStatus" class="subtle" aria-live="polite"></p></section>
+    <section class="review-section"><h3>选区核对</h3><label class="checkbox"><input id="skinReviewed" type="checkbox"><span>已核对当前照片的皮肤与保护选区</span></label><button id="reviewAll" class="text-button">本批展示的选区均已核对</button><p id="maskReviewSummary" class="subtle"></p></section>
+    <section id="watermarkSection" class="review-section hidden"><h3>活动水印</h3><div id="watermarkOptions" class="watermark-options hidden" role="group" aria-label="选择活动水印版本"></div><p id="watermarkChoiceHint" class="subtle hidden"></p><div id="watermarkCurrent" class="watermark-thumb"><img id="watermarkImage" alt="本活动待确认的水印资产"></div><label class="checkbox"><input id="watermarkEnabled" type="checkbox" checked><span>使用预览中的右下角水印</span></label><p class="subtle">本次确认后，同场沿用这一版水印。</p></section>
+    <label id="warningAcceptLabel" class="checkbox warning-accept hidden"><input id="warningAccept" type="checkbox"><span>已查看并接受当前照片的高光或暗部细节变化</span></label>
+    <label class="field-label note-field">补充说明的用途<select id="noteIntent"><option value="change_request">需要修改效果</option><option value="delivery_note">仅作交付备注，不改变效果</option></select></label>
+    <label class="field-label note-field">补充说明<textarea id="decisionNote" rows="2" maxlength="2000" placeholder="例如：整体再亮一点，脸上有一处瑕疵，请重新出样"></textarea></label>
+    <button id="submitChanges" class="secondary revision-button">提交修改要求，重新出样</button><p id="revisionStatus" class="subtle" aria-live="polite"></p>
+    <div class="decision-action"><button id="approveButton" class="primary" disabled><svg><use href="#icon-check"/></svg><span>确认效果并开始批量</span></button><p id="decisionHint" class="subtle">样片准备完成后可确认。</p></div>
+  </aside>
+</div>
+<footer class="footer"><span>本地处理 · 原片保留 · 每批独立选样</span><button id="callbackTest" class="text-button">检查对话回传</button><button id="callbackRetry" class="text-button hidden">重试待核对的回传</button><span id="lastSaved"></span></footer>
+<dialog id="detailsDialog"><div class="dialog-heading"><div><h2>原像素细节</h2><p>左侧为原片，右侧为当前候选。可横向滚动查看完整像素。</p><button id="fullImageOpen" class="text-button">查看整幅原像素（含当前水印选择）</button></div><button id="detailsClose" class="secondary">关闭</button></div><div id="detailList" class="detail-list"></div></dialog>
+<dialog id="watermarkDialog" class="watermark-fit-dialog" aria-labelledby="watermarkDialogTitle"><div class="dialog-heading"><div><h2 id="watermarkDialogTitle">水印叠加检查</h2><p>完整照片随窗口等比缩放，可直接检查水印位置与比例。</p></div><button id="watermarkDialogClose" class="secondary">关闭</button></div><div id="watermarkFitArea" class="watermark-fit-area"><div id="watermarkFitStage" class="watermark-fit-stage"></div></div></dialog>
+<div id="toast" class="toast hidden" role="status"></div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "schema_version": "retouch-batch-1",
+  "batch_id": null,
+  "state": "draft",
+  "scope": {
+    "conditions": [],
+    "color_contract": null,
+    "delivery_contract": null,
+    "runtime_id": null,
+    "shared_asset_ids": []
+  },
+  "artifacts": [],
+  "source_ids": [],
+  "pending_input_ids": [],
+  "excluded_inputs": [],
+  "photos": [],
+  "sample_set": [],
+  "approval": null,
+  "deliveries": []
+}
