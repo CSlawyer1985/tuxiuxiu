@@ -1,41 +1,398 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="图修修：在本机完成活动照片选样、参数微调、皮肤处理与水印合成。先比较样片，确认后再批量另存。">
-<meta name="theme-color" content="#f2f0e9">
+<meta name="theme-color" content="#f3f0e8">
 <title>图修修 · 活动照片批量处理</title>
 <link rel="stylesheet" href="styles.css">
-<script src="vendor/gsap.min.js" defer></script><script src="vendor/ScrollTrigger.min.js" defer></script><script src="app.js" defer></script>
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
+<script src="app.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">跳到正文</a>
-<header class="site-header">
-<a class="brand" href="#main" aria-label="图修修首页"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 13V8h5M19 8h5v5M24 19v5h-5M13 24H8v-5" stroke="currentColor" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="currentColor"/></svg><span>图修修</span><small class="version-text">2.6.0</small></a>
-<nav aria-label="网站导航"><a href="#examples">效果对比</a><a href="#guide">使用指引</a><a href="#download" class="nav-download">下载 Skill <span aria-hidden="true">↗</span></a></nav>
+<div class="scroll-progress" aria-hidden="true"><i id="scroll-progress-bar"></i></div>
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#main" aria-label="图修修首页">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 13V8h5M19 8h5v5M24 19v5h-5M13 24H8v-5" stroke="currentColor" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="currentColor"/></svg>
+      <span>图修修</span>
+      <small class="version-text">2.6.0</small>
+    </a>
+    <nav aria-label="网站导航">
+      <a href="#examples">效果对比</a>
+      <a href="#workbench">工作台</a>
+      <a href="#guide">使用指引</a>
+      <a href="#download" class="nav-download">下载 Skill <span aria-hidden="true">↓</span></a>
+    </nav>
+  </div>
 </header>
+
 <main id="main">
-<section class="hero section-shell" id="examples" aria-labelledby="hero-title">
-<div class="hero-copy"><p class="eyebrow">活动照片 · 本地批量处理</p><h1 id="hero-title">活动照片，<br>成组修好。</h1><p class="hero-lead">培训、会议、人物与现场。<br>让 AI 助手陪你选样、修片、加水印，<br>确认好这一批，再处理下一批。</p>
-<div class="hero-actions"><a class="button button-dark" href="#download">下载 Skill <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v12m-5-5 5 5 5-5M5 18v3h14v-3" stroke="currentColor" stroke-width="1.5"/></svg></a><a class="text-link" href="#workflow">看看怎样批量处理 <span aria-hidden="true">↗</span></a></div><p class="hero-install-note">首次使用需准备 Python 与独立运行环境</p><p class="hero-principles"><span>照片留在本机</span><span>原片保留</span><span>先选样，后批量</span></p></div>
-<div class="hero-visual"><div class="photo-caption"><span id="scene-label">01 / 培训现场</span><span id="compare-caption">测试原图 × 调色与水印</span></div>
-<div class="compare-frame" id="compare-frame"><img class="compare-image after-image" id="hero-after" src="media/training-after.jpg" alt="培训现场试修效果" fetchpriority="high"><img class="compare-image before-image" id="hero-before" src="media/training-before.jpg" alt="培训现场原片" fetchpriority="high"><span class="photo-tag tag-before">测试原图</span><span class="photo-tag tag-after">优化＋水印</span><div class="compare-line" aria-hidden="true"><span>‹<i></i>›</span></div><input id="compare-range" class="compare-range" type="range" min="0" max="100" value="50" aria-label="调整原片与试修效果的比较位置" aria-valuetext="原片显示 50%，试修效果显示 50%"></div>
-<div class="compare-tools"><p><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10h14M6 7l-3 3 3 3m8-6 3 3-3 3" stroke="currentColor" stroke-width="1.2"/></svg>拖动比较，也可使用方向键</p><button class="inspect-button" id="hero-inspect" type="button">放大检查 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m6 0h4v-4" stroke="currentColor" stroke-width="1.2"/></svg></button></div>
-<div class="scene-selector" role="group" aria-label="选择示例场景"><button class="scene-button is-active" type="button" data-scene="training" aria-pressed="true"><img src="media/training-before.jpg" alt="" loading="lazy"><span><small>01</small>培训现场</span></button><button class="scene-button" type="button" data-scene="training-detail" aria-pressed="false"><img src="media/training-detail-before.jpg" alt="" loading="lazy"><span><small>02</small>同图局部</span></button><button class="scene-button" type="button" data-scene="portrait" aria-pressed="false"><img src="media/portrait-before.jpg" alt="" loading="lazy"><span><small>03</small>人像细节</span></button></div><p class="sample-note" id="scene-note">生成的培训现场测试素材，经本地调色并合入右下角水印；拖动查看同一图像的处理前后。</p><p class="asset-error" id="asset-error" role="status" hidden>样图暂未加载完成，请稍后重试或刷新页面。</p></div>
-</section>
-<section class="workflow-section" id="workflow" aria-labelledby="workflow-title"><div class="section-shell workflow-layout"><div class="workflow-intro"><h2 id="workflow-title">先把这一批定好，<br>再把重复的事交出去。</h2><p>不同活动、不同灯光，分别选样。确认方案、强度和水印后，再按这一批的方向处理。</p><figure class="workflow-photo"><img src="media/training-detail-before.jpg" alt="同图局部原片" loading="lazy"><img class="workflow-photo-after" src="media/training-detail-after.jpg" alt="同一张同图局部试修效果" loading="lazy"><figcaption>从原片归档，到新版本另存</figcaption></figure></div>
-<div class="process-list-wrap"><div class="process-track" aria-hidden="true"><div class="process-progress"></div></div><ol class="process-list"><li><span class="step-number">01</span><div><h3>归档原片</h3><p>原文件单独保留，先检查尺寸、方向和色彩依据。处理结果另存，不覆盖原件。</p></div></li><li><span class="step-number">02</span><div><h3>逐批选样</h3><p>从实际照片中选代表场景。会议全景、不同灯光、人物近景，条件不同就补样。</p></div></li><li><span class="step-number">03</span><div><h3>确认方案、参数与水印</h3><p>先比较原片和修图效果，再检查同一张照片上的三版水印。强度可以微调，效果由你决定。</p></div></li><li><span class="step-number">04</span><div><h3>批量处理，逐张另存</h3><p>在确认范围内继续处理。遇到新条件或不可靠选区，会暂停相应处理并提示复核。</p></div></li></ol></div></div></section>
-<section class="detail-section section-shell" id="details" aria-labelledby="detail-title"><div class="section-heading"><div><h2 id="detail-title">细节处理，也有边界。</h2></div><p>肤色与磨皮范围分别保存。额头、面颈和肩部需要连续处理；眼眉、嘴唇与头发需要排除。远景小脸或五官不可靠时，暂缓相关连续皮肤的磨皮，再进入复核。</p></div>
-<div class="detail-gallery"><button class="detail-photo" type="button" data-detail="portrait" data-variant="after"><span class="detail-photo-label">柔和人像 · 试修</span><img src="media/portrait-after.jpg" alt="点击放大人像试修，检查额头、面颈和肩部" loading="lazy"><span class="detail-photo-action">放大检查 <span aria-hidden="true">↗</span></span></button><button class="detail-photo" type="button" data-detail="portrait" data-variant="skin"><span class="detail-photo-label">自动皮肤候选</span><img src="media/skin-overlay.jpg" alt="点击放大皮肤候选，检查覆盖及五官排除范围" loading="lazy"><span class="detail-photo-action">检查选区 <span aria-hidden="true">↗</span></span></button><div class="detail-explanation"><span class="detail-kicker">自动初选之后，仍要检查。</span><h3>保留真实纹理，<br>也保留你的判断。</h3><p>模型负责初选与细化，不能保证每张照片都准确。头发、衣物误选、遮挡和远处人物，仍可能需要复核。</p><p>培训场景由生成素材作测试底图，经本地像素调色与水印合成；人像展示既有实测试修与候选范围。</p><div class="verification"><span><strong data-regression-count>108</strong> 项回归检查</span><span><strong data-contract-count>38</strong> 项批次检查</span></div></div></div>
-</section>
-<section class="download-section" id="download" aria-labelledby="download-title"><div class="section-shell"><div class="section-heading"><div><h2 id="download-title">选一个适合你的包。</h2></div><p>两种包都包含四个模型。普通包首次联网准备运行库；对应平台的离线包带齐运行库。准备一次，之后在本机复用。</p></div><p class="download-status" id="download-status" role="status">正在读取版本与下载信息……</p><div class="download-options">
-<article class="download-option"><div class="download-option-top"><span>01 / 联网准备</span><span class="package-size" data-size="standard">读取中</span></div><h3>普通分享包</h3><p>适合可以联网准备环境的用户。已含模型，首次下载独立运行库。</p><ul><li>需已有 Python 3.12—3.14</li><li>首次准备需要联网及约 400 MB 空间</li><li>当前实测为 Mac Apple 芯片</li></ul><a class="button button-dark package-download" data-package="standard" href="#download" aria-disabled="true">读取下载信息 <span aria-hidden="true">↓</span></a><details class="checksum"><summary>查看文件校验值</summary><code data-sha="standard">正在读取</code><button type="button" class="copy-sha" data-copy-sha="standard">复制 SHA-256</button><span class="copy-feedback" role="status"></span></details></article>
-<article class="download-option"><div class="download-option-top"><span>02 / 对应环境离线准备</span><span class="package-size" data-size="offline">读取中</span></div><h3>Apple 芯片离线包</h3><p>适合 Mac M 系列芯片，并且已经安装 Python 3.14 的用户。</p><ul><li>仅匹配 macOS arm64 与 Python 3.14</li><li>包含运行库，准备时可离线</li><li>仍需约 400 MB 独立环境空间</li></ul><a class="button button-outline package-download" data-package="offline" href="#download" aria-disabled="true">读取下载信息 <span aria-hidden="true">↓</span></a><details class="checksum"><summary>查看文件校验值</summary><code data-sha="offline">正在读取</code><button type="button" class="copy-sha" data-copy-sha="offline">复制 SHA-256</button><span class="copy-feedback" role="status"></span></details></article>
-</div><p class="compatibility-note">两个包都不包含 Python 安装程序。Windows 尚未适配；Linux、Intel Mac 未在本轮实机验证。网站只提供介绍与下载，修图在你自己的电脑上进行。</p></div></section>
-<section class="guide-section section-shell" id="guide" aria-labelledby="guide-title"><div class="guide-heading"><h2 id="guide-title">从一个照片文件夹开始。</h2><p>不用先研究全部参数。把环境准备好，把照片交给支持本地 Skill 的 AI 助手，然后一起看样片。</p></div><div class="guide-content"><details open><summary><span>01</span>检查电脑与 Python</summary><div class="guide-detail"><p>本轮已验证的环境是 Mac Apple 芯片、Python 3.14。普通包支持准备 Python 3.12—3.14 环境，其他平台或版本仍需在你的机器上自检。</p><p>如果没有 Python，请先安装受支持版本。离线包也需要已有 Python 3.14，不是一个独立 App 安装包。</p></div></details><details><summary><span>02</span>解压后，完成首次准备</summary><div class="guide-detail"><p>保留完整的 <code>event-photo-retouch</code> 文件夹。Mac 用户打开包内的“一键准备.command”，阅读提示后再同意准备。</p><p>普通包此时需要联网下载运行库；匹配环境的离线包优先使用随包运行库。安装在用户的独立缓存中，不修改系统 Python，也不上传照片。</p><p>如果系统提示无法运行，或准备未完成，请把提示交给 AI 助手，按包内 README 检查。不要跳过错误就开始批量处理。</p></div></details><details><summary><span>03</span>把整个 Skill 文件夹交给助手</summary><div class="guide-detail"><p>本轮使用 Codex 完成本地流程。打开 Codex 的一个照片工作目录，将解压文件夹路径交给助手，并说明：“请将这个完整 Skill 安装到当前工作目录的 .agents/skills/event-photo-retouch，保留已有同名目录，完成首次环境自检后再处理照片。”</p><p>安装后用 $event-photo-retouch 明确调用；未出现在技能列表时重启 Codex。其他助手需先核对本地 Skill 与脚本能力。<a class="text-link" href="https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills">Codex 官方加载位置说明 ↗</a></p></div></details><details><summary><span>04</span>交给它照片，先比较样片</summary><div class="guide-detail"><p>把照片文件夹路径和下面这句话一起发给助手。先看样片、参数和水印，再决定当前批次的最终效果。</p><div class="prompt-block"><p id="starter-prompt">请使用图修修 Skill 处理我提供的照片文件夹。先按场景选样，展示原片与试修效果、参数和三版水印预览；等我确认后再批量另存，保留原片。若环境尚未准备，请先说明所需空间、联网情况，并经我同意后准备。</p><button class="button button-outline" id="copy-prompt" type="button">复制这段话 <span aria-hidden="true">↗</span></button><p class="copy-feedback" id="prompt-feedback" role="status"></p></div></div></details></div></section>
-<section class="faq-section section-shell" aria-labelledby="faq-title"><div><h2 id="faq-title">还有几个常见问题。</h2></div><div class="faq-list"><details><summary>照片会上传到网站或模型服务吗？</summary><p>照片处理在本机完成。普通包首次准备会下载运行库，缺失模型时按授权准备官方模型；这与上传照片是两件事。介绍网站不提供上传照片的功能。</p></details><details><summary>每次修片都要重新安装或重新识别吗？</summary><p>环境首次准备成功后复用。选区结果按原片、方向尺寸、模型和算子版本缓存；拉动修图参数时复用已有选区。原片或相关处理版本改变时，需要重新计算与核对。</p></details><details><summary>能把整场活动一次性自动修完吗？</summary><p>在已经确认的场景与处理范围内可以继续批量。新灯光、新场景、未覆盖条件或不可靠的皮肤范围会进入补样与复核；不会把某一张照片的偏好直接套到所有活动。</p></details><details><summary>四个模型就能保证所有皮肤都选准吗？</summary><p>不能。模型负责自动初选、细化和异常提示。远景小脸、遮挡、侧脸或复杂光线仍有局限；技术核对未通过时暂缓磨皮，保留能够完成的调色。</p></details><details><summary>能直接在这个网页里修图吗？</summary><p>这个网站用于查看真实效果、下载 Skill 与阅读指引。下载后，由具备本地文件和运行能力的 AI 助手在你的电脑上启动修图工作台。</p></details></div></section>
+  <!-- HERO -->
+  <section class="hero" id="examples" aria-labelledby="hero-title">
+    <div class="hero-stage">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>活动照片 · 本地批量处理</p>
+        <h1 id="hero-title">活动照片，<br>成组修好。</h1>
+        <p class="hero-lead">培训、会议、人物与现场。<br>让 AI 助手陪你选样、修片、加水印，<br>确认好这一批，再处理下一批。</p>
+        <div class="hero-actions">
+          <a class="button button-dark" href="#download">下载 Skill <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v12m-5-5 5 5 5-5M5 18v3h14v-3" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <a class="text-link" href="#workflow">看看怎样批量处理 <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="hero-install-note">首次使用需准备 Python 与独立运行环境</p>
+        <ul class="hero-principles" aria-label="核心原则">
+          <li>照片留在本机</li>
+          <li>原片保留</li>
+          <li>先选样，后批量</li>
+        </ul>
+      </div>
+
+      <div class="hero-visual reveal" data-reveal-delay="80">
+        <div class="compare-chrome">
+          <div class="photo-caption">
+            <span id="scene-label">01 / 培训现场</span>
+            <span id="compare-caption">测试原图 × 调色与水印</span>
+          </div>
+          <div class="compare-frame" id="compare-frame">
+            <img class="compare-image after-image" id="hero-after" src="media/training-after.jpg" alt="培训现场试修效果" fetchpriority="high" width="1586" height="992">
+            <img class="compare-image before-image" id="hero-before" src="media/training-before.jpg" alt="培训现场原片" fetchpriority="high" width="1586" height="992">
+            <span class="photo-tag tag-before" id="tag-before">测试原图</span>
+            <span class="photo-tag tag-after" id="tag-after">优化＋水印</span>
+            <div class="compare-line" id="compare-line" aria-hidden="true"><span class="compare-handle"><i></i></span></div>
+            <input id="compare-range" class="compare-range" type="range" min="0" max="100" value="52" aria-label="调整原片与试修效果的比较位置" aria-valuetext="原片显示 52%，试修效果显示 48%">
+          </div>
+          <div class="compare-tools">
+            <p><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10h14M6 7l-3 3 3 3m8-6 3 3-3 3" stroke="currentColor" stroke-width="1.2"/></svg>拖动比较 · 方向键微调 · 双击复位</p>
+            <button class="inspect-button" id="hero-inspect" type="button">放大检查 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m6 0h4v-4" stroke="currentColor" stroke-width="1.2"/></svg></button>
+          </div>
+        </div>
+
+        <div class="scene-selector" role="tablist" aria-label="选择示例场景">
+          <button class="scene-button is-active" type="button" role="tab" data-scene="training" aria-selected="true" aria-pressed="true">
+            <img src="media/training-before.jpg" alt="" loading="lazy" width="320" height="200">
+            <span><small>01</small>培训现场</span>
+          </button>
+          <button class="scene-button" type="button" role="tab" data-scene="training-detail" aria-selected="false" aria-pressed="false">
+            <img src="media/training-detail-before.jpg" alt="" loading="lazy" width="320" height="200">
+            <span><small>02</small>同图局部</span>
+          </button>
+          <button class="scene-button" type="button" role="tab" data-scene="portrait" aria-selected="false" aria-pressed="false">
+            <img src="media/portrait-before.jpg" alt="" loading="lazy" width="200" height="290">
+            <span><small>03</small>人像细节</span>
+          </button>
+        </div>
+        <p class="sample-note" id="scene-note">生成的培训现场测试素材，经本地调色并合入右下角水印；拖动查看同一图像的处理前后。</p>
+        <p class="asset-error" id="asset-error" role="status" hidden>样图暂未加载完成，请稍后重试或刷新页面。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKFLOW -->
+  <section class="workflow-section" id="workflow" aria-labelledby="workflow-title">
+    <div class="section-shell workflow-layout">
+      <div class="workflow-intro reveal">
+        <p class="eyebrow">工作流程</p>
+        <h2 id="workflow-title">先把这一批定好，<br>再把重复的事交出去。</h2>
+        <p>不同活动、不同灯光，分别选样。确认方案、强度和水印后，再按这一批的方向处理。</p>
+        <figure class="workflow-photo">
+          <img src="media/training-detail-before.jpg" alt="同图局部原片" loading="lazy" width="1010" height="680">
+          <img class="workflow-photo-after" src="media/training-detail-after.jpg" alt="同一张同图局部试修效果" loading="lazy" width="1010" height="680">
+          <figcaption>从原片归档，到新版本另存</figcaption>
+        </figure>
+      </div>
+      <div class="process-list-wrap reveal" data-reveal-delay="100">
+        <div class="process-track" aria-hidden="true"><div class="process-progress"></div></div>
+        <ol class="process-list">
+          <li>
+            <span class="step-number">01</span>
+            <div>
+              <h3>归档原片</h3>
+              <p>原文件单独保留，先检查尺寸、方向和色彩依据。处理结果另存，不覆盖原件。</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <div>
+              <h3>逐批选样</h3>
+              <p>从实际照片中选代表场景。会议全景、不同灯光、人物近景，条件不同就补样。</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">03</span>
+            <div>
+              <h3>确认方案、参数与水印</h3>
+              <p>先比较原片和修图效果，再检查同一张照片上的三版水印。强度可以微调，效果由你决定。</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">04</span>
+            <div>
+              <h3>批量处理，逐张另存</h3>
+              <p>在确认范围内继续处理。遇到新条件或不可靠选区，会暂停相应处理并提示复核。</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL / SKIN -->
+  <section class="detail-section section-shell" id="details" aria-labelledby="detail-title">
+    <div class="section-heading reveal">
+      <div>
+        <p class="eyebrow">细节与边界</p>
+        <h2 id="detail-title">细节处理，也有边界。</h2>
+      </div>
+      <p>肤色与磨皮范围分别保存。额头、面颈和肩部需要连续处理；眼眉、嘴唇与头发需要排除。远景小脸或五官不可靠时，暂缓相关连续皮肤的磨皮，再进入复核。</p>
+    </div>
+    <div class="detail-gallery">
+      <button class="detail-photo reveal" type="button" data-detail="portrait" data-variant="after">
+        <span class="detail-photo-label">柔和人像 · 试修</span>
+        <img src="media/portrait-after.jpg" alt="点击放大人像试修，检查额头、面颈和肩部" loading="lazy" width="500" height="724">
+        <span class="detail-photo-action">放大检查 <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="detail-photo reveal" type="button" data-detail="portrait" data-variant="skin" data-reveal-delay="60">
+        <span class="detail-photo-label">自动皮肤候选</span>
+        <img src="media/skin-overlay.jpg" alt="点击放大皮肤候选，检查覆盖及五官排除范围" loading="lazy" width="500" height="724">
+        <span class="detail-photo-action">检查选区 <span aria-hidden="true">↗</span></span>
+      </button>
+      <div class="detail-explanation reveal" data-reveal-delay="120">
+        <span class="detail-kicker">自动初选之后，仍要检查。</span>
+        <h3>保留真实纹理，<br>也保留你的判断。</h3>
+        <p>模型负责初选与细化，不能保证每张照片都准确。头发、衣物误选、遮挡和远处人物，仍可能需要复核。</p>
+        <p>培训场景由生成素材作测试底图，经本地像素调色与水印合成；人像展示既有实测试修与候选范围。</p>
+        <div class="verification">
+          <span><strong data-regression-count>108</strong> 项回归检查</span>
+          <span><strong data-contract-count>38</strong> 项批次检查</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKBENCH (new visual section; facts from existing assets) -->
+  <section class="workbench-section" id="workbench" aria-labelledby="workbench-title">
+    <div class="section-shell">
+      <div class="workbench-heading reveal">
+        <div>
+          <p class="eyebrow">本地工作台</p>
+          <h2 id="workbench-title">选样、调参、三版水印，<br>都在同一张工作台上。</h2>
+        </div>
+        <p>上方比较原片与试修；下方并排查看三版水印；右侧微调方案与强度。确认后才批量另存，原片始终保留。</p>
+      </div>
+      <aside class="wm-callout reveal" role="note" aria-labelledby="wm-callout-title">
+        <div class="wm-callout-badge">使用前提</div>
+        <div class="wm-callout-body">
+          <h3 id="wm-callout-title">水印需要生图能力，或你自备。</h3>
+          <p>活动水印是通过<strong>生图模型</strong>生成的。使用本 Skill 时，建议尽量选择<strong>具备生图能力</strong>的模型；若当前助手不能生图，请<strong>自备水印</strong>素材后再进入三版预览与批量。</p>
+        </div>
+      </aside>
+      <figure class="workbench-frame reveal">
+        <img src="media/workbench.png" alt="本地修图工作台：原片对比、方案参数与下方三版水印预览" loading="lazy" width="1520" height="2352">
+        <figcaption>实际工作台演示画面：选样、参数与三版水印同屏确认。不是用户活动的成品确认。</figcaption>
+      </figure>
+      <div class="workbench-facts reveal">
+        <article>
+          <h3>本地像素调色</h3>
+          <p>不重绘，不生成。提亮、层次、色彩与锐化在本机完成，人物与现场事实保持不变。</p>
+        </article>
+        <article>
+          <h3>配方可微调</h3>
+          <p>培训展示配方含曝光、阴影、高光、对比、色温等参数；人像另有磨皮强度。效果由你决定。</p>
+          <ul class="param-chips" aria-label="培训展示配方摘要">
+            <li>曝光 +1.8 EV</li>
+            <li>阴影 0.9</li>
+            <li>高光 −1.3</li>
+            <li>对比 0.65</li>
+            <li>色温 −6.5</li>
+            <li>锐化 0.95</li>
+          </ul>
+        </article>
+        <article>
+          <h3>三版水印</h3>
+          <p>同一张照片上预览纯文字、主题标志与线条设计，选定后再进入批量。水印可由生图模型生成；无生图能力时请自备水印。</p>
+          <div class="wm-preview">
+            <img src="media/watermark.png" alt="图修修水印素材示意" loading="lazy" width="520" height="156">
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="download-section" id="download" aria-labelledby="download-title">
+    <div class="section-shell">
+      <div class="section-heading reveal">
+        <div>
+          <p class="eyebrow">下载</p>
+          <h2 id="download-title">选一个适合你的包。</h2>
+        </div>
+        <p>两种包都包含四个模型。普通包首次联网准备运行库；对应平台的离线包带齐运行库。准备一次，之后在本机复用。</p>
+      </div>
+      <p class="download-status" id="download-status" role="status">正在读取版本与下载信息……</p>
+      <div class="download-options">
+        <article class="download-option reveal is-recommended">
+          <div class="download-option-top">
+            <span>01 / 联网准备</span>
+            <span class="package-size" data-size="standard">读取中</span>
+          </div>
+          <p class="package-badge">常用选择</p>
+          <h3>普通分享包</h3>
+          <p>适合可以联网准备环境的用户。已含模型，首次下载独立运行库。</p>
+          <ul>
+            <li>需已有 Python 3.12—3.14</li>
+            <li>首次准备需要联网及约 400 MB 空间</li>
+            <li>当前实测为 Mac Apple 芯片</li>
+          </ul>
+          <a class="button button-dark package-download" data-package="standard" href="#download" aria-disabled="true">读取下载信息 <span aria-hidden="true">↓</span></a>
+          <details class="checksum">
+            <summary>查看文件校验值</summary>
+            <code data-sha="standard">正在读取</code>
+            <button type="button" class="copy-sha" data-copy-sha="standard">复制 SHA-256</button>
+            <span class="copy-feedback" role="status"></span>
+          </details>
+        </article>
+        <article class="download-option reveal" data-reveal-delay="80">
+          <div class="download-option-top">
+            <span>02 / 对应环境离线准备</span>
+            <span class="package-size" data-size="offline">读取中</span>
+          </div>
+          <p class="package-badge package-badge-quiet">环境匹配</p>
+          <h3>Apple 芯片离线包</h3>
+          <p>适合 Mac M 系列芯片，并且已经安装 Python 3.14 的用户。</p>
+          <ul>
+            <li>仅匹配 macOS arm64 与 Python 3.14</li>
+            <li>包含运行库，准备时可离线</li>
+            <li>仍需约 400 MB 独立环境空间</li>
+          </ul>
+          <a class="button button-outline package-download" data-package="offline" href="#download" aria-disabled="true">读取下载信息 <span aria-hidden="true">↓</span></a>
+          <details class="checksum">
+            <summary>查看文件校验值</summary>
+            <code data-sha="offline">正在读取</code>
+            <button type="button" class="copy-sha" data-copy-sha="offline">复制 SHA-256</button>
+            <span class="copy-feedback" role="status"></span>
+          </details>
+        </article>
+      </div>
+      <p class="compatibility-note">两个包都不包含 Python 安装程序。Windows 尚未适配；Linux、Intel Mac 未在本轮实机验证。网站只提供介绍与下载，修图在你自己的电脑上进行。</p>
+    </div>
+  </section>
+
+  <!-- GUIDE -->
+  <section class="guide-section section-shell" id="guide" aria-labelledby="guide-title">
+    <div class="guide-heading reveal">
+      <p class="eyebrow">使用指引</p>
+      <h2 id="guide-title">从一个照片文件夹开始。</h2>
+      <p>不用先研究全部参数。把环境准备好，把照片交给支持本地 Skill 的 AI 助手，然后一起看样片。</p>
+    </div>
+    <div class="guide-content reveal" data-reveal-delay="60">
+      <details open>
+        <summary><span>01</span>检查电脑与 Python</summary>
+        <div class="guide-detail">
+          <p>本轮已验证的环境是 Mac Apple 芯片、Python 3.14。普通包支持准备 Python 3.12—3.14 环境，其他平台或版本仍需在你的机器上自检。</p>
+          <p>如果没有 Python，请先安装受支持版本。离线包也需要已有 Python 3.14，不是一个独立 App 安装包。</p>
+        </div>
+      </details>
+      <details>
+        <summary><span>02</span>解压后，完成首次准备</summary>
+        <div class="guide-detail">
+          <p>保留完整的 <code>event-photo-retouch</code> 文件夹。Mac 用户打开包内的“一键准备.command”，阅读提示后再同意准备。</p>
+          <p>普通包此时需要联网下载运行库；匹配环境的离线包优先使用随包运行库。安装在用户的独立缓存中，不修改系统 Python，也不上传照片。</p>
+          <p>如果系统提示无法运行，或准备未完成，请把提示交给 AI 助手，按包内 README 检查。不要跳过错误就开始批量处理。</p>
+        </div>
+      </details>
+      <details>
+        <summary><span>03</span>把整个 Skill 文件夹交给助手</summary>
+        <div class="guide-detail">
+          <p>本轮使用 Codex 完成本地流程。打开 Codex 的一个照片工作目录，将解压文件夹路径交给助手，并说明：“请将这个完整 Skill 安装到当前工作目录的 .agents/skills/event-photo-retouch，保留已有同名目录，完成首次环境自检后再处理照片。”</p>
+          <p>安装后用 $event-photo-retouch 明确调用；未出现在技能列表时重启 Codex。其他助手需先核对本地 Skill 与脚本能力。<a class="text-link" href="https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills" target="_blank" rel="noopener noreferrer">Codex 官方加载位置说明 ↗</a></p>
+        </div>
+      </details>
+      <details>
+        <summary><span>04</span>交给它照片，先比较样片</summary>
+        <div class="guide-detail">
+          <p>把照片文件夹路径和下面这句话一起发给助手。先看样片、参数和水印，再决定当前批次的最终效果。</p>
+          <p class="wm-inline-note"><strong>水印提醒：</strong>水印依赖生图模型生成。请尽量选用有生图能力的模型；否则请自备水印后再让助手做三版预览。</p>
+          <div class="prompt-block">
+            <p id="starter-prompt">请使用图修修 Skill 处理我提供的照片文件夹。先按场景选样，展示原片与试修效果、参数和三版水印预览；等我确认后再批量另存，保留原片。若环境尚未准备，请先说明所需空间、联网情况，并经我同意后准备。</p>
+            <button class="button button-outline" id="copy-prompt" type="button">复制这段话 <span aria-hidden="true">↗</span></button>
+            <p class="copy-feedback" id="prompt-feedback" role="status"></p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section section-shell" aria-labelledby="faq-title">
+    <div class="reveal">
+      <p class="eyebrow">常见问题</p>
+      <h2 id="faq-title">还有几个常见问题。</h2>
+    </div>
+    <div class="faq-list reveal" data-reveal-delay="60">
+      <details>
+        <summary>照片会上传到网站或模型服务吗？</summary>
+        <p>照片处理在本机完成。普通包首次准备会下载运行库，缺失模型时按授权准备官方模型；这与上传照片是两件事。介绍网站不提供上传照片的功能。</p>
+      </details>
+      <details>
+        <summary>每次修片都要重新安装或重新识别吗？</summary>
+        <p>环境首次准备成功后复用。选区结果按原片、方向尺寸、模型和算子版本缓存；拉动修图参数时复用已有选区。原片或相关处理版本改变时，需要重新计算与核对。</p>
+      </details>
+      <details>
+        <summary>能把整场活动一次性自动修完吗？</summary>
+        <p>在已经确认的场景与处理范围内可以继续批量。新灯光、新场景、未覆盖条件或不可靠的皮肤范围会进入补样与复核；不会把某一张照片的偏好直接套到所有活动。</p>
+      </details>
+      <details>
+        <summary>四个模型就能保证所有皮肤都选准吗？</summary>
+        <p>不能。模型负责自动初选、细化和异常提示。远景小脸、遮挡、侧脸或复杂光线仍有局限；技术核对未通过时暂缓磨皮，保留能够完成的调色。</p>
+      </details>
+      <details>
+        <summary>能直接在这个网页里修图吗？</summary>
+        <p>这个网站用于查看真实效果、下载 Skill 与阅读指引。下载后，由具备本地文件和运行能力的 AI 助手在你的电脑上启动修图工作台。</p>
+      </details>
+      <details open>
+        <summary>做水印一定要有生图模型吗？</summary>
+        <p>活动水印默认通过生图模型生成。使用本 Skill 时，建议尽量选择具备生图能力的模型；如果当前助手不能生图，也可以自备水印素材，再进入三版预览与批量。</p>
+      </details>
+    </div>
+  </section>
 </main>
-<footer class="site-footer section-shell"><a class="footer-brand" href="#main">图修修</a><p>认真对待每一批现场照片。</p><div><a href="https://github.com/CSlawyer1985/tuxiuxiu" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="third-party.txt">模型与第三方许可</a><span class="version-text">2.6.0</span><a href="#guide">使用指引 ↑</a></div></footer>
-<dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-title"><div class="lightbox-header"><div><p class="eyebrow">DETAIL INSPECTION</p><h2 id="lightbox-title">培训现场 · 放大检查</h2></div><button id="close-lightbox" class="close-button" type="button" aria-label="关闭放大检查">关闭 <span aria-hidden="true">×</span></button></div><div class="lightbox-switch" role="group" aria-label="选择检查图像"><button type="button" data-modal-variant="before" aria-pressed="false">原片</button><button type="button" data-modal-variant="after" aria-pressed="true">试修效果</button><button type="button" data-modal-variant="skin" aria-pressed="false" hidden>皮肤候选</button></div><div class="lightbox-image-wrap"><img id="lightbox-image" src="media/training-after.jpg" alt="培训现场试修效果，适应当前窗口"></div><p class="lightbox-note">按窗口尺寸显示完整图像 · 按 Esc 返回</p></dialog>
+
+<footer class="site-footer section-shell">
+  <a class="footer-brand" href="#main">图修修</a>
+  <p>认真对待每一批现场照片。</p>
+  <div>
+    <a href="https://github.com/CSlawyer1985/tuxiuxiu" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    <a href="third-party.txt">模型与第三方许可</a>
+    <span class="version-text">2.6.0</span>
+    <a href="#guide">使用指引 ↑</a>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-title">
+  <div class="lightbox-header">
+    <div>
+      <p class="eyebrow">DETAIL INSPECTION</p>
+      <h2 id="lightbox-title">培训现场 · 放大检查</h2>
+    </div>
+    <button id="close-lightbox" class="close-button" type="button" aria-label="关闭放大检查">关闭 <span aria-hidden="true">×</span></button>
+  </div>
+  <div class="lightbox-switch" role="group" aria-label="选择检查图像">
+    <button type="button" data-modal-variant="before" aria-pressed="false">原片</button>
+    <button type="button" data-modal-variant="after" aria-pressed="true">试修效果</button>
+    <button type="button" data-modal-variant="skin" aria-pressed="false" hidden>皮肤候选</button>
+  </div>
+  <div class="lightbox-image-wrap">
+    <img id="lightbox-image" src="media/training-after.jpg" alt="培训现场试修效果，适应当前窗口">
+  </div>
+  <p class="lightbox-note">按窗口尺寸显示完整图像 · 按 Esc 返回</p>
+</dialog>
+
+<a class="mobile-download-bar" href="#download" aria-label="前往下载">下载 Skill <span aria-hidden="true">↓</span></a>
+
 <noscript><p class="noscript-notice">浏览器关闭了 JavaScript。你仍可阅读安装说明；样图切换和下载信息需要开启 JavaScript。</p></noscript>
-</body></html>
+</body>
+</html>
